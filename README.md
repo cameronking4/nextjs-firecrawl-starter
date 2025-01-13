@@ -1,8 +1,6 @@
 # Next.js Firecrawl Starter
 ![image](https://github.com/user-attachments/assets/e82a0567-6ad9-44c4-bc4b-2a99543cac1f)
 
-A frequent use case for Firecrawl is to scrape developer documentation for LLM context when generating code. 
-
 This Nextjs app aims to provide a modern web interface for crawling documentation and processing it for LLM use. Use the output `markdown`, `xml`, or `zip` files to build knowledge files to copy over to a vector database, a ChatGPT GPT, an OpenAI Assistant, Claude Artifacts, Vapi.ai, Aimdoc, or any other LLM tool.
 
 ![image](https://github.com/user-attachments/assets/8d48194d-7436-4227-9919-7602688c65b7)
@@ -26,6 +24,8 @@ https://github.com/user-attachments/assets/fdc0f1a3-1632-44fc-b382-332377d73ed6
 
 ## OpenAPI Spec & Custom GPT Actions
 You can use this project to serve endpoints for your LLM tools. In ChatGPT, you can click `Create a GPT` and then `Create Action` to allow your GPT to call the Firecrawl API endpoints and return results in chat.
+
+![image (3)](https://github.com/user-attachments/assets/1280fc24-582b-42b3-8c76-7db66c72b004)
 
 ### Quickstart
 Add the Firecrawl actions to your GPT by copying and pasting this import URL in the Configure Tab:
