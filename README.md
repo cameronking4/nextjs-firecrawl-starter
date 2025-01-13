@@ -1,12 +1,11 @@
 # Next.js Firecrawl Starter
-
-![image](https://github.com/user-attachments/assets/f5421718-4951-47b9-9db6-cd9632dc5f2f)
+![image](https://github.com/user-attachments/assets/e82a0567-6ad9-44c4-bc4b-2a99543cac1f)
 
 A frequent use case for Firecrawl is to scrape developer documentation for LLM context when generating code. 
 
 This Nextjs app aims to provide a modern web interface for crawling documentation and processing it for LLM use. Use the output `markdown`, `xml`, or `zip` files to build knowledge files to copy over to a vector database, a ChatGPT GPT, an OpenAI Assistant, Claude Artifacts, Vapi.ai, Aimdoc, or any other LLM tool.
 
-![screenrun-01-13-2025-06-42-30](https://github.com/user-attachments/assets/56912254-1802-48ea-9cc3-99dcc880e4dd)
+![image](https://github.com/user-attachments/assets/8d48194d-7436-4227-9919-7602688c65b7)
 
 The Next app generates a .md file, .xml file, or .zip of markdown files ready for LLM consumption, inspired by the [devdocs-to-llm](https://github.com/alexfazio/devdocs-to-llm) Jupyter notebook by Alex Fazio.
 
@@ -21,7 +20,7 @@ The Next app generates a .md file, .xml file, or .zip of markdown files ready fo
 ## Github Action 
 Use the Github Action template to define automations. Leverage Github Actions cron to schedule crawls for a given site and commit markdown file directly to repo.
 
-https://github.com/user-attachments/assets/d1edcf8e-a929-48ab-8c9a-b588cb548680
+https://github.com/user-attachments/assets/fdc0f1a3-1632-44fc-b382-332377d73ed6
 
 ## Tech Stack
 
