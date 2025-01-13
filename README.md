@@ -20,6 +20,8 @@ The Next app generates a .md file, .xml file, or .zip of markdown files ready fo
 ## Github Action 
 Use the Github Action template to define automations. Leverage Github Actions cron to schedule crawls for a given site and commit markdown file directly to repo.
 
+[![Firecrawl Action](https://github.com/cameronking4/nextjs-firecrawl-starter/actions/workflows/crawl-docs.yml/badge.svg)](https://github.com/cameronking4/nextjs-firecrawl-starter/actions/workflows/crawl-docs.yml)
+
 https://github.com/user-attachments/assets/fdc0f1a3-1632-44fc-b382-332377d73ed6
 
 ## Tech Stack
