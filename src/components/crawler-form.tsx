@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useConfetti } from "@/hooks/use-confetti";
-import { Terminal, Hash, Bug, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
+import { Terminal, Hash, Bug, AlertCircle, Loader2 } from "lucide-react";
 
 const loadingStates = [
   { text: "Teaching the fire to crawl..." },
