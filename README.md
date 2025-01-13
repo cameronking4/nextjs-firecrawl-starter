@@ -24,6 +24,16 @@ Use the Github Action template to define automations. Leverage Github Actions cr
 
 https://github.com/user-attachments/assets/fdc0f1a3-1632-44fc-b382-332377d73ed6
 
+## OpenAPI Spec & Custom GPT Actions
+You can use this project to serve endpoints for your LLM tools. In ChatGPT, you can click `Create a GPT` and then `Create Action` to allow your GPT to call the Firecrawl API endpoints and return results in chat.
+
+### Quickstart
+Add the Firecrawl actions to your GPT by copying and pasting this import URL in the Configure Tab:
+```
+https://nextjs-firecrawl-starter.vercel.app/api/openapi
+```
+This URL is defined and can be edited in the `/api/openapi/route.ts` file.
+
 ## Tech Stack
 
 - **Framework**: Next.js 15.1.4

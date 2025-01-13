@@ -215,19 +215,25 @@ export function CrawlerForm({ onResults }: CrawlerFormProps) {
 
         {error && (
           <Alert variant="destructive" className="motion-preset-slide-up motion-preset-fade">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription className="text-lg font-semibold">{error}</AlertDescription>
+            </div>
           </Alert>
         )}
 
         {loading && (
           <>
             {progress === 0 ? (
-              <div className="fixed inset-0 z-[9999] bg-background/80 backdrop-blur-sm px-4">
-                <MultiStepLoader loadingStates={loadingStates} loading={loading} duration={3000} />
-              </div>
+              <p className="text-muted-foreground text-md">{loadingStates[0].text}</p>
             ) : (
-              <Progress value={progress} className="w-full motion-preset-fade" />
+              <div className="text-muted-foreground flex flex-col">
+                <div className="flex text-lg gap-2 items-center">
+                  <p>{loadingStates[Math.floor((progress / 100) * loadingStates.length)].text}</p>
+                  <p>{progress}%</p>
+                </div>
+                <Progress value={progress} className="w-full motion-preset-fade" /> 
+              </div>
             )}
           </>
         )}
@@ -249,27 +255,6 @@ export function CrawlerForm({ onResults }: CrawlerFormProps) {
             </>
           )}
         </Button>
-        {progress > 5 && (
-          <div className={`
-            border rounded-lg shadow-sm p-3 sm:p-4 flex sm:flex-row items-start sm:items-center gap-2 
-            motion-preset-slide-up motion-preset-fade
-            ${progress < 30 ? '' : 
-              progress < 60 ? 'border-yellow-500' : 
-              progress < 90 ? 'border-blue-500' : 
-              'border-green-500'}
-          `}>
-            <CheckCircle2 className={`
-              h-6 w-6 text-center mt-0.5 sm:mt-0
-              ${progress < 30 ? 'text-red-500' :
-                progress < 60 ? 'text-yellow-500' :
-                progress < 90 ? 'text-blue-500' :
-                'text-green-500'}
-            `} />
-            <p>
-              {progress}% processed successfully
-            </p>
-          </div>
-        )}
       </form>
     </div>
   );

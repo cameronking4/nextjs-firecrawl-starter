@@ -1,0 +1,26 @@
+name: Scheduled Crawl Action
+
+# This workflow will automatically crawl the specified URL on a schedule and commit the results to your repository.
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Replace with the cron expression for the schedule you want to use (e.g., '0 0 * * *' for daily at midnight UTC)
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Firecrawl Action
+        uses: ./ # Replace with the published action name e.g., cameronking4/firecrawl-cron@v1
+        with:
+          url: 'https://news.ycombinator.com' # Replace with the URL you want to crawl regularly
+          output_folder: 'knowledge_bases' # Replace with the folder name where the output commits will be saved
+          api_url: 'https://nextjs-firecrawl-starter.vercel.app' # Replace with the API URL of your Firecrawl API endpoint, this is the default URL for the starter app.

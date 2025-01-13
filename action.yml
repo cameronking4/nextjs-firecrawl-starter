@@ -1,0 +1,92 @@
+name: 'Firecrawl Scheduled Action'
+description: 'Automatically crawls specified URLs on a schedule and commits the results to your repository. Perfect for keeping documentation, knowledge bases, and reference materials up to date.'
+
+inputs:
+  url:
+    description: 'URL to crawl'
+    required: true
+  output_folder:
+    description: 'Folder name where crawled content will be saved'
+    required: true
+    default: 'knowledge_bases'
+  api_url:
+    description: 'API endpoint for crawling (e.g., https://nextjs-firecrawl-starter.vercel.app)'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Create output directory if not exists
+      shell: bash
+      run: mkdir -p ${{ inputs.output_folder }}
+
+    - name: Crawl URL
+      id: crawl
+      shell: bash
+      run: |
+        response=$(curl -X POST -H "Content-Type: application/json" \
+          -d "{\"url\":\"${{ inputs.url }}\"}" \
+          ${{ inputs.api_url }}/api/crawl)
+
+        if ! echo "$response" | jq . >/dev/null 2>&1; then
+          echo "Error: Invalid JSON response from crawl API"
+          exit 1
+        fi
+
+        crawl_id=$(echo "$response" | jq -r '.id')
+        if [ "$crawl_id" = "null" ] || [ -z "$crawl_id" ]; then
+          echo "Error: No crawl ID received"
+          exit 1
+        fi
+
+        echo "crawl_id=$crawl_id" >> $GITHUB_OUTPUT
+
+    - name: Wait for crawl completion
+      id: check_status
+      shell: bash
+      run: |
+        crawl_id="${{ steps.crawl.outputs.crawl_id }}"
+        while true; do
+          status_response=$(curl -s "${{ inputs.api_url }}/api/crawl/status/$crawl_id")
+          if ! echo "$status_response" | jq . >/dev/null 2>&1; then
+            echo "Error: Invalid JSON response from status API"
+            exit 1
+          fi
+
+          status=$(echo "$status_response" | jq -r '.status')
+          if [ "$status" = "completed" ]; then
+            markdown=$(echo "$status_response" | jq -r '.data[0].markdown')
+            echo "$markdown" > /tmp/crawl_result.md
+            break
+          elif [ "$status" = "failed" ]; then
+            exit 1
+          fi
+          sleep 5
+        done
+
+    - name: Generate filename from URL
+      id: filename
+      shell: bash
+      run: |
+        filename=$(echo "${{ inputs.url }}" | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')
+        timestamp=$(date +%Y%m%d-%H%M%S)
+        echo "filename=${{ inputs.output_folder }}/${filename}-${timestamp}.md" >> $GITHUB_OUTPUT
+
+    - name: Save markdown to file
+      shell: bash
+      run: cp /tmp/crawl_result.md "${{ steps.filename.outputs.filename }}"
+
+    - name: Commit and push if there are changes
+      shell: bash
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add "${{ inputs.output_folder }}/"
+        git commit -m "Add crawled documentation for ${{ inputs.url }}" || echo "No changes to commit"
+        git push
+
+branding:
+  icon: 'globe'
+  color: 'blue'
