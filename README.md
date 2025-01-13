@@ -120,7 +120,9 @@ This Next.js version builds upon these capabilities by:
 - Implementing real-time crawl status tracking
 - Providing a serverless architecture for Firecrawl API processing
 - Adding dark/light theme support
-- Making the tool more accessible through a user-friendly UI deployable on Vercel
+- Making the tool more accessible through a user-friendly UI deployed on Vercel
+- Github Actions for manual and scheduled scraping
+- OpenAPI Specification for LLM Tool Calling
 
 ## License
 
