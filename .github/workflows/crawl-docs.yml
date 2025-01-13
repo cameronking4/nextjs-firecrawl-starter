@@ -1,0 +1,108 @@
+name: Firecrawl Action
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL to crawl'
+        required: true
+        type: string
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create knowledge_bases directory if not exists
+        run: mkdir -p knowledge_bases
+
+      - name: Crawl URL
+        id: crawl
+        run: |
+          # Make the API call and store response
+          response=$(curl -X POST -H "Content-Type: application/json" \
+            -d "{\"url\":\"${{ github.event.inputs.url }}\"}" \
+            ${{ secrets.NEXT_PUBLIC_APP_URL }}/api/crawl)
+          
+          # Check if response is valid JSON
+          if ! echo "$response" | jq . >/dev/null 2>&1; then
+            echo "Error: Invalid JSON response from crawl API"
+            exit 1
+          fi
+          
+          # Extract and validate crawl ID
+          crawl_id=$(echo "$response" | jq -r '.id')
+          if [ "$crawl_id" = "null" ] || [ -z "$crawl_id" ]; then
+            echo "Error: No crawl ID received"
+            echo "Response: $response"
+            exit 1
+          fi
+          
+          echo "crawl_id=$crawl_id" >> $GITHUB_OUTPUT
+
+      - name: Wait for crawl completion
+        id: check_status
+        run: |
+          crawl_id="${{ steps.crawl.outputs.crawl_id }}"
+          
+          while true; do
+            status_response=$(curl -s "${{ secrets.NEXT_PUBLIC_APP_URL }}/api/crawl/status/$crawl_id")
+            
+            # Check if response is valid JSON
+            if ! echo "$status_response" | jq . >/dev/null 2>&1; then
+              echo "Error: Invalid JSON response from status API"
+              exit 1
+            fi
+            
+            status=$(echo "$status_response" | jq -r '.status')
+            
+            if [ "$status" = "completed" ]; then
+              # Extract markdown content from the data array
+              markdown=$(echo "$status_response" | jq -r '.data[0].markdown')
+              if [ "$markdown" = "null" ] || [ -z "$markdown" ]; then
+                echo "Error: No markdown content found in response"
+                echo "Response: $status_response"
+                exit 1
+              fi
+              
+              # Store the markdown in a file to avoid GitHub Actions output truncation
+              echo "$markdown" > /tmp/crawl_result.md
+              break
+            elif [ "$status" = "failed" ]; then
+              echo "Error: Crawl failed"
+              echo "Response: $status_response"
+              exit 1
+            fi
+            
+            echo "Waiting for crawl to complete..."
+            sleep 5
+          done
+
+      - name: Generate filename from URL
+        id: filename
+        run: |
+          # Convert URL to filename-friendly format
+          filename=$(echo "${{ github.event.inputs.url }}" | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')
+          timestamp=$(date +%Y%m%d-%H%M%S)
+          echo "filename=knowledge_bases/${filename}-${timestamp}.md" >> $GITHUB_OUTPUT
+
+      - name: Save markdown to file
+        run: |
+          # Copy the result from our temporary file to the final location
+          cp /tmp/crawl_result.md "${{ steps.filename.outputs.filename }}"
+          
+          # Verify the file was created and has content
+          if [ ! -s "${{ steps.filename.outputs.filename }}" ]; then
+            echo "Error: Output file is empty"
+            exit 1
+          fi
+
+      - name: Commit and push if there are changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add knowledge_bases/
+          git commit -m "Add crawled documentation for ${{ github.event.inputs.url }}"
+          git push
