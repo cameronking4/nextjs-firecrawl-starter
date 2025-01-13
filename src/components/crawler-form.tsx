@@ -7,7 +7,6 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useConfetti } from "@/hooks/use-confetti";
 import { Terminal, Hash, Bug, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
-import { MultiStepLoader } from "@/components/multi-step-loader";
 
 const loadingStates = [
   { text: "Teaching the fire to crawl..." },
