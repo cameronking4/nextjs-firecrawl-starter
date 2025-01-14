@@ -1,5 +1,5 @@
 name: 'Firecrawl Scheduled Action'
-description: 'Automatically crawls specified URLs on a schedule and commits the results to your repository. Perfect for keeping documentation, knowledge bases, and reference materials up to date.'
+description: 'Automatically crawls a specified URL on a schedule and commits the results to your repository.'
 
 inputs:
   url:
@@ -10,7 +10,7 @@ inputs:
     required: true
     default: 'knowledge_bases'
   api_url:
-    description: 'API endpoint for crawling'
+    description: 'API endpoint for crawling (e.g., https://nextjs-firecrawl-starter.vercel.app)'
     required: true
 runs:
   using: 'composite'
