@@ -17,10 +17,41 @@ The Next app generates a .md file, .xml file, or .zip of markdown files ready fo
 
 ## Github Action 
 Use the Github Action template to define automations. Leverage Github Actions cron to schedule crawls for a given site and commit markdown file directly to repo.
+### Manual Trigger
+https://github.com/user-attachments/assets/fdc0f1a3-1632-44fc-b382-332377d73ed6
 
+### Scheduled Crawl ([available on Github Marketplace](https://github.com/marketplace/actions/firecrawl-scheduled-action))
 [![Firecrawl Action](https://github.com/cameronking4/nextjs-firecrawl-starter/actions/workflows/crawl-docs.yml/badge.svg)](https://github.com/cameronking4/nextjs-firecrawl-starter/actions/workflows/crawl-docs.yml)
 
-https://github.com/user-attachments/assets/fdc0f1a3-1632-44fc-b382-332377d73ed6
+Add this to any Github Repo to start crawling on a schedule. It will commit the output results automatically after crawling to a specified folder. Default is to crawl `Hacker News` everyday at midnight and store results in the `/knowledge_bases` folder.
+
+```yaml
+name: Scheduled Crawl Action
+
+# This workflow will automatically crawl the specified URL on a schedule and commit the results to your repository.
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Replace with the cron expression for the schedule you want to use (e.g., '0 0 * * *' for daily at midnight UTC)
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Firecrawl Scheduled Action
+        uses: cameronking4/nextjs-firecrawl-starter@v1.0.0
+        with:
+          url: 'https://news.ycombinator.com' # Replace with the URL you want to crawl regularly
+          output_folder: 'knowledge_bases' # Replace with the folder name where the output commits will be saved
+          api_url: 'https://nextjs-firecrawl-starter.vercel.app' # Replace with the API URL of your Firecrawl API endpoint, this is the default URL for the starter app.
+```
 
 ## OpenAPI Spec & Custom GPT Actions
 You can use this project to serve endpoints for your LLM tools. In ChatGPT, you can click `Create a GPT` and then `Create Action` to allow your GPT to call the Firecrawl API endpoints and return results in chat.
