@@ -10,7 +10,7 @@ inputs:
     required: true
     default: 'knowledge_bases'
   api_url:
-    description: 'API endpoint for crawling (e.g., https://nextjs-firecrawl-starter.vercel.app)'
+    description: 'API endpoint for crawling'
     required: true
 runs:
   using: 'composite'
