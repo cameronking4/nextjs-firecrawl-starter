@@ -21,6 +21,6 @@ jobs:
       - name: Run Firecrawl Action
         uses: ./ # Replace with the published action name e.g., cameronking4/firecrawl-cron@v1
         with:
-          url: 'https://news.ycombinator.com' # Replace with the URL you want to crawl regularly
-          output_folder: 'knowledge_bases' # Replace with the folder name where the output commits will be saved
+          url: 'https://us.umami.is/share/ab0PxXA8SvWBBbJS/vapiblocks.com' # Replace with the URL you want to crawl regularly
+          output_folder: 'analytics' # Replace with the folder name where the output commits will be saved
           api_url: 'https://nextjs-firecrawl-starter.vercel.app' # Replace with the API URL of your Firecrawl API endpoint, this is the default URL for the starter app.
